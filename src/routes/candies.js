@@ -20,32 +20,73 @@ const platziStore = (app) => {
     res.sendFile(file);
   });
 
+  
   router.get(
-    '/candies', passport.authenticate('jwt', { session: false }), async (req, res, next) => {
-    const storeCandys = await candyService.getCandies()
-    res.status(200).json(storeCandys);
-  });
-
+    '/candies',
+    async (req, res, next) => {
+      const storeCandys = await candyService.getCandies()
+      res.status(200).json({
+        data: storeCandys,
+        message: 'candies listed'
+      });
+    });
+    
   router.get(
-    '/candies/:id', passport.authenticate('jwt', { session: false }), async (req, res, next) => {
-    const { id } = req.params
-    const storeCandys = await candyService.getCandyById(id)
-    res.status(200).json(storeCandys);
-  });
+    '/candies/:id',
+    async (req, res, next) => {
+      const { id } = req.params
+      const storeCandy = await candyService.getCandyById(id)
+      res.status(200).json({
+        data: storeCandy,
+        message: 'candy received'
+      });
+    });
+      
+  router.post(
+    '/',
+    async function (req, res, next) {
+      const { body: piece } = req;
+      const candy = await candyService.createCandy({ ...piece });
+      res.status(201).json({
+        data: candy,
+        message: 'candy created'
+      })
+    });
 
   router.put(
-    '/candies/:id', passport.authenticate('jwt', { session: false }), async (req, res, next) => {
-    const { id } = req.params
-    const { body: candy } = req
-    const storeCandys = await candyService.updateCandyById({ id, ...candy })
-    res.status(200).json(storeCandys);
-  });
+    '/:candyId',
+    async (req, res, next) => {
+      const { candyId } = req.params
+      const { body: candy } = req
+      const storeCandies = await candyService.updateCandyById( candyId, { ...candy })
+      res.status(200).json({
+        data: storeCandies,
+        message: 'candy updated'
+      });
+    });
 
-  router.delete('/candies/:id', passport.authenticate('jwt', { session: false }), async (req, res, next) => {
-    const { id } = req.params
-    const storeCandys = await candyService.deleteCandyById(id)
-    res.status(200).json(storeCandys);
-  });
+  router.patch(
+    '/:candyId',
+    async (req, res, next) => {
+      const { candyId } = req.params
+      const { body: candy } = req
+      const storeCandies = await candyService.patchCandyById( candyId, { ...candy })
+      res.status(200).json({
+        data: storeCandies,
+        message: 'candy patched'
+      });
+    });
+
+  router.delete(
+    '/candies/:id',
+    async (req, res, next) => {
+      const { id } = req.params
+      const storeCandy = await candyService.deleteCandyById(id)    
+      res.status(200).json({
+        data: storeCandy,
+        message: 'candy deleted'
+      });
+    });
 
   router.get('*', (req, res) => {
     res.status(404).send('Error 404');

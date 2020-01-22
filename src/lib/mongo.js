@@ -60,6 +60,16 @@ class MongoLib {
       })
       .then(result => result.upsertedId || id);
   }
+  
+  patch(collection, id, data) {
+    return this.connect()
+      .then(db => {
+        return db
+          .collection(collection)
+          .updateOne({ _id: ObjectId(id) }, { $set: data }, { upsert: true });
+      })
+      .then(result => result.upsertedId || id);
+  }
 
   delete(collection, id) {
     return this.connect()
@@ -68,6 +78,7 @@ class MongoLib {
       })
       .then(() => id);
   }
+
 }
 
 module.exports = MongoLib;

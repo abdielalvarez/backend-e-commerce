@@ -8,6 +8,7 @@ const { config } = require('../config');
 
 // Basic strategy
 require('../utils/auth/strategies/basic');
+require('../utils/auth/strategies/jwt');
 
 function authApi(app) {
   const router = express.Router();
@@ -23,8 +24,10 @@ function authApi(app) {
       next(boom.unauthorized('apiKeyToken is required'));
     }
 
-    passport.authenticate('jwt', function(error, user) {
+    passport.authenticate('basic', function(error, user) {
       try {
+        console.log(user);
+        
         if (error || !user) {
           next(boom.unauthorized());
         }
@@ -70,7 +73,9 @@ function authApi(app) {
     const { body: user } = req;
 
     try {
-      const createdUserId = await usersService.createUser({ user });
+      // console.log(user);
+      
+      const createdUserId = await usersService.createUser(user);
 
       res.status(201).json({
         data: createdUserId,
