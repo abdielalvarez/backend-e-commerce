@@ -30,15 +30,37 @@ const platziStore = (app) => {
         message: 'candies listed'
       });
     });
+
+  router.get(
+    '/candiesByFilter/:category/:filter',
+    async (req, res, next) => {
+      const { category, filter } = req.params;
+      const storeCandys = await candyService.getCandiesByFilter(category, filter)
+      res.status(200).json({
+        data: storeCandys,
+        message: 'candies filtered'
+      });
+    });
+
+  router.get(
+    '/candiesBySearch/:search?',
+    async (req, res, next) => {
+      const { search } = req.params;
+      const storeCandys = await candyService.getCandiesBySearch(search)
+      res.status(200).json({
+        data: storeCandys,
+        message: 'candies searched'
+      });
+    });
     
   router.get(
-    '/candies/:id',
+    '/candy/:id',
     async (req, res, next) => {
       const { id } = req.params
-      const storeCandy = await candyService.getCandyById(id)
+      const storeCandy = await candyService.getCandyDescription(id)
       res.status(200).json({
         data: storeCandy,
-        message: 'candy received'
+        message: 'candy description received'
       });
     });
       

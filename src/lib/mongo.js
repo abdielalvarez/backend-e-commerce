@@ -37,7 +37,27 @@ class MongoLib {
     });
   }
 
-  get(collection, id) {
+  getCandiesByFilter(collection, query, category, filter) {
+    return this.connect().then(db => {
+      query[`${category}.${filter}`] = true
+      return db
+        .collection(collection)
+        .find(query)
+        .toArray();
+    });
+  }
+
+  getCandiesBySearch(collection, query, search) {
+    return this.connect().then(db => {
+      query['name'] = new RegExp(search, 'i')
+      return db
+        .collection(collection)
+        .find(query)
+        .toArray();
+    });
+  }
+
+  getCandyDescription(collection, id) {
     return this.connect().then(db => {
       return db.collection(collection).findOne({ _id: ObjectId(id) });
     });
@@ -54,6 +74,17 @@ class MongoLib {
   update(collection, id, data) {
     return this.connect()
       .then(db => {
+        return db
+          .collection(collection)
+          .updateOne({ _id: ObjectId(id) }, { $set: data }, { upsert: true });
+      })
+      .then(result => result.upsertedId || id);
+  }
+
+  updateUserById(collection, id, data) {
+    return this.connect()
+      .then(db => {
+        console.log(id);
         return db
           .collection(collection)
           .updateOne({ _id: ObjectId(id) }, { $set: data }, { upsert: true });

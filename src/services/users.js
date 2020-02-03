@@ -9,7 +9,7 @@ class UserService {
 
   async getUser({ email }) {
     try {
-      const [user] = await this.mongodb.getAll(this.collection, { email })
+      const [user] = await this.mongodb.getAll(this.collection, { email })  
       return user
     } catch (error) {
       throw new Error(error);
@@ -19,7 +19,7 @@ class UserService {
   async createUser(user) {
     try {
       const { name, lastName, email, password } = user
-      console.log('USER:', user)
+      // console.log('USER:', user)
       const hashedPassword = await bcrypt.hash(password, 10);
 
       const createdUser = await this.mongodb.create(this.collection, {
@@ -41,6 +41,15 @@ class UserService {
 
     await this.createUser({ user });
     return await this.getUser({ email: user.email });
+  }
+
+  async updateUserById( id, { ...data }) {
+    try {
+      const candyId = await this.mongodb.updateUserById(this.collection, id, data);
+      return candyId;
+    } catch (error) {
+      throw new Error(error);
+    }
   }
 }
 

@@ -14,10 +14,28 @@ class CandyService {
       throw new Error(error);
     }
   }
-  
-  async getCandyById(id) {
+
+  async getCandiesByFilter(category, filter) {
     try {
-      const candy = await this.mongodb.get(this.collection, id);
+      const candies = await this.mongodb.getCandiesByFilter(this.collection, {}, category, filter);
+      return candies;
+    } catch (error) {
+      throw new Error(error);
+    }
+  }
+
+  async getCandiesBySearch(search) {
+    try {
+      const candies = await this.mongodb.getCandiesBySearch(this.collection, {}, search);
+      return candies;
+    } catch (error) {
+      throw new Error(error);
+    }
+  }
+  
+  async getCandyDescription(id) {
+    try {
+      const candy = await this.mongodb.getCandyDescription(this.collection, id);
       return candy;
     } catch (error) {
       throw new Error(error);
