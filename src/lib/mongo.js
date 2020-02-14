@@ -1,6 +1,6 @@
 const { MongoClient, ObjectId } = require('mongodb');
 const { config } = require('../config');
-const { dbUser, dbPassword, dbHost, dbName } = config
+const { dbUser, dbPassword, dbHost, dbName } = config;
 const DB_NAME = dbName;
 
 const MONGO_URI = `mongodb+srv://${dbUser}:${dbPassword}${dbHost}/${DB_NAME}?retryWrites=true&w=majority`;
@@ -84,7 +84,6 @@ class MongoLib {
   updateUserById(collection, id, data) {
     return this.connect()
       .then(db => {
-        console.log(id);
         return db
           .collection(collection)
           .updateOne({ _id: ObjectId(id) }, { $set: data }, { upsert: true });
